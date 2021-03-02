@@ -1,18 +1,13 @@
-const mongoose = require('mongoose');
 const Empleado = require('./modelo');
-
-mongoose.Promise = global.Promise;
-const user = "manu";
-const pass = "manu";
-const dbname = "coleccion";
-const uri = `mongodb+srv://${user}:${pass}@manucluster.c1h7e.mongodb.net/${dbname}?retryWrites=true&w=majority`;
-mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}, ()=>{
-    console.log(`conectado a la DDBB ${dbname}`);
-});
 
 function addEmpleado(empleado){
     const miEmpleado = new Empleado(empleado);
     miEmpleado.save();
+}
+
+async function getEmpleado(idEmpleado){
+    const empleado = await Empleado.findById(idEmpleado);
+    return empleado;
 }
 
 async function getEmpleados(){
@@ -20,7 +15,24 @@ async function getEmpleados(){
     return empleados;
 }
 
+async function updateEmpleado(idEmpleado, datosEmpleado){
+    console.log(idEmpleado);
+    console.log(datosEmpleado);
+    const empleado = await Empleado.findById(idEmpleado);
+    empleado.ocupacion = datosEmpleado;
+    const nuevoEmpleado = await empleado.save();
+    return nuevoEmpleado;
+}
+
+async function deleteEmpleado(idEmpleado){
+    const empleado = await Empleado.findById(idEmpleado);
+    empleadoBorrado = await empleado.remove();
+}
+
 module.exports = {
     addEmpleado,
-    getEmpleados
+    getEmpleados,
+    getEmpleado,
+    updateEmpleado,
+    deleteEmpleado
 }
